@@ -1,41 +1,45 @@
 from tkinter import *
-import matplotlib.pyplot as plt     
+import matplotlib.pyplot as plt
+from tkinter.ttk import *
+from PIL import ImageTk, Image 
 
 langas = Tk()
 langas.title("Jausmomatis")
-langas.geometry("380x500")
-
+langas.geometry("320x560")
+ikonele = PhotoImage(file="happy1.png")
+langas.iconphoto(True, ikonele)
 busenos_mygtukai = IntVar()
+sad_btn = PhotoImage(file="sad-face1.png")
+neutral_btn = PhotoImage(file="neutral-face1.png")
+smile_btn = PhotoImage(file="happy1.png")
 
 class Pagrindinis:
     def __init__(self, master):
         self.master = master
-        self.tarpas = Label(self.master, text="")
-        self.tarpas.grid(row=0, column=1)
-        self.pavadinimas = Label(self.master, text="CodeAcademy PTU-5 Jausmomatis", width=50 )
-        self.pavadinimas.grid(row=1, column=1)
-        self.tarpas = Label(self.master, text="")
-        self.tarpas.grid(row=2, column=1)
-        self.paaiskinimas = Label(self.master, text="Pasirinkite kaip šiandien jaučiatės\n išklausius naują temą bei atlikus užduotis", width=50)
-        self.paaiskinimas.grid(row=3, column=1)
-        self.b_liudnas = Radiobutton(self.master, text="Liūdnas", variable=busenos_mygtukai, value=1, width=50)
+        self.pavadinimas = Label(self.master, text="Asmeninis jausmomatis", justify=CENTER, font=)
+        self.pavadinimas.grid(row=1, column=1, padx=10, pady=10)
+        self.paaiskinimas = Label(self.master, text="Pasirinki kaip šiandien jautiesi\n išklausius naują temą bei atlikus užduotis", justify=CENTER)
+        self.paaiskinimas.grid(row=3, column=1, padx=10, pady=10)
+        self.b_liudnas = Radiobutton(self.master, image=sad_btn, variable=busenos_mygtukai, value=1)
         self.b_liudnas.grid(row=4, column=1)
-        self.liudnas_apibudinimas = Label(self.master, text="visiškai nieko nesuprantu apie ką kalbama,\n perskaičius užduotį neaišku ko manęs prašoma atlikti", width=50)
+        self.liudnas_apibudinimas = Label(self.master, text="visiškai nieko nesuprantu apie ką kalbama,\n perskaičius užduotį neaišku ko manęs prašoma atlikti", justify=CENTER)
         self.liudnas_apibudinimas.grid(row=5, column=1)    
-        self.b_neutralus = Radiobutton(self.master, text="Neutralus", variable=busenos_mygtukai, value=2, width=50)
+        self.b_neutralus = Radiobutton(self.master, image=neutral_btn, variable=busenos_mygtukai, value=2)
         self.b_neutralus.grid(row=6, column=1)
-        self.neutralus_apibudinimas = Label(self.master, text="temą kaip ir suprantu, tačiau \nnepavyksta pilnai/greitai atlikti užduočių", width=50)
+        self.neutralus_apibudinimas = Label(self.master, text="temą kaip ir suprantu, tačiau \nnepavyksta pilnai/greitai atlikti užduočių", justify=CENTER)
         self.neutralus_apibudinimas.grid(row=7, column=1)
-        self.b_linksmas = Radiobutton(self.master, text="Linksmas", variable=busenos_mygtukai, value=3, width=50)
+        self.b_linksmas = Radiobutton(self.master, image=smile_btn, variable=busenos_mygtukai, value=3)
         self.b_linksmas.grid(row=8, column=1)
-        self.linksmas_apibudinimas = Label(self.master, text="viskas aišku ir suprantama!", width=50)
+        self.linksmas_apibudinimas = Label(self.master, text="viskas aišku ir suprantama!", justify=CENTER)
         self.linksmas_apibudinimas.grid(row=9, column=1)
-        self.issaugoti = Button(self.master, text='Išsaugoti pasirinkimą', command=self.issaugoti_pasirinkta, width=50)
-        self.issaugoti.grid(row=10, column=1)
-        self.tarpas = Label(self.master, text="")
-        self.tarpas.grid(row=11, column=1)
-        self.b_rezultatas = Button(self.master, text="Rezultatas", command=self.gauti_rezultata, width=50)
-        self.b_rezultatas.grid(row=12, column=1)
+        self.issaugoti = Button(self.master, text='Išsaugoti pasirinkimą', command=self.issaugoti_pasirinkta)
+        self.issaugoti.grid(row=10, column=1, padx=10, pady=10)
+        self.b_rezultatas = Button(self.master, text="Rezultatas", command=self.gauti_rezultata)
+        self.b_rezultatas.grid(row=12, column=1, padx=10, pady=10)
+        self.b_naujas = Button(self.master, text="Gyvenimo moto. Spausk čia!", command=self.naujas_langas)
+        self.b_naujas.grid(row=14, column=1, padx=10, pady=10)
+        self.b_uzdaryti = Button(self.master, text="Uždaryti programą", command=self.uzdaryti_langa)
+        self.b_uzdaryti.grid(row=16, column=1, padx=10, pady=10)
 
     def issaugoti_pasirinkta(self):
         ivesta = str(busenos_mygtukai.get())
@@ -51,7 +55,7 @@ class Pagrindinis:
         self.liudnas_apibudinimas["text"] = ''
         self.neutralus_apibudinimas["text"] = ''
         self.linksmas_apibudinimas["text"] = ''
-        self.paaiskinimas["text"] = "Ačiū"
+        self.paaiskinimas["text"] = "Puiku, tavo rezultatas išsaugotas!"
         try:
             with open("emotionmeter.txt", "a") as tekstinis_irasyti:
                 tekstinis_irasyti.writelines(ivesta + "\n")
@@ -76,15 +80,26 @@ class Pagrindinis:
                 linksmas += 1
         busenos = ["Liūdnas", "Neutralus", "Linksmas"]
         suma = [liudnas, neutralus, linksmas]
-        plt.bar(busenos, suma)
-        plt.title("Kaip šiandien jaučiamės?")
+        spalvos = ["gray", "silver", "gainsboro"]
+        plt.bar(busenos, suma, color=spalvos)
+        plt.title("Rezultatas")
         plt.xlabel("Būsenos")
         plt.ylabel("Suma")
         plt.show()
 
-# class Vidinis:
-#     def __init__(self, master):
-#         self.master = master
+    def uzdaryti_langa(self):
+        self.master.destroy()
+
+    def naujas_langas(self):
+        self.vidinis = Toplevel(self.master)
+        self.naujas = Vidinis(self.vidinis)
+   
+class Vidinis:
+    def __init__(self, master):
+        self.master = master
+        self.paveikslelis = ImageTk.PhotoImage(Image.open("image/if_sad1.JPG"))
+        self.image = Label(self.master, image=self.paveikslelis)
+        self.image.pack(side=BOTTOM, fill=BOTH, expand=YES)
 
 programa = Pagrindinis(langas)
 langas.mainloop()
